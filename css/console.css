@@ -1,0 +1,130 @@
+.console{
+    margin: 1rem;
+    background: #F0F0F0;
+    padding: .5rem;
+    border: 1px solid;
+    font-size: 1.25rem;
+    overflow: auto;
+    height: 400px;
+    max-width: 100%;
+}
+.console::-webkit-scrollbar,
+.block__list::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 4px;
+    height: 4px;
+}
+.console::-webkit-scrollbar-track,
+.block__list::-webkit-scrollbar-track{
+    background-color: rgba(0,0,0,.08);
+}
+.console::-webkit-scrollbar-thumb,
+.block__list::-webkit-scrollbar-thumb{
+    border-radius: 4px;
+    background: linear-gradient(180deg, #0077bc 0%, #4392A9 100%);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+.console__block{
+    padding: 0 1rem 1rem;
+    width: max-content;
+}
+.console__block::before,.console__block::after{
+    color: #fa2929;
+}
+.console__block::before{
+    display: block;
+    content: "{";
+    font-weight: 600;
+    margin-left: -1rem;
+}
+.console__block::after{
+    display: block;
+    content: "}";
+    font-weight: 600;
+    margin-left: -1rem;
+}
+.text::before,.text::after{
+    display: none;
+}
+.array::before{
+    content: "[";
+}
+.array::after{
+    content: "]";
+}
+.console__line{
+    display: block;
+    position: relative;
+}
+.console__line::after{
+    display: table;
+    content: "";
+    clear: both;
+}
+.console__line>.console__block{
+    padding-top: 0;
+}
+.console__line>.console__block,
+.console__key,
+.console__value{
+    float: left;
+}
+.console__value>pre{
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+.console__line>.console__block::after,
+.console__line>.console__block::before{
+    color: #fa2929;
+}
+.console__line>.array::after,
+.console__line>.array::before{
+    color:#5ac651;
+}
+.comma>.console__value::after{
+    content: ",";
+    color: #0000cc;
+}
+.comma>.console__block::after{
+    content: "},";
+}
+.comma>.array::after{
+    content: "],";
+}
+.console__key{
+    color:#0000cc;
+    font-weight: 600;
+}
+.console__line>.console__block>.console__line .console__key::before{
+    display: block;
+    position: absolute;
+    left:-.75rem;
+    height: 100%;
+    width: 1px;
+    background: #ff4e0017;
+    content: "";
+}
+.console__line>.console__block>.console__value{
+    color: #084d02;
+}
+.console__key::after{
+    content: ":";
+    padding: 0 .5rem 0 .125rem;
+    font-weight: 600;
+}
+.number{
+    color: #4040AA
+}
+.bool{
+    color: #00b823;
+}
+.string{
+    color: #b25b07;
+}
+.funct{
+    color:#5858ff;
+}
+.funct__key{
+    color:#fd9800;
+}
