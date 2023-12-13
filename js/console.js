@@ -11,7 +11,7 @@ class MyConsole {
         this._console.children().remove();
     }
     log(obj) {
-        const el = this._renderObj(obj);
+        const el = this._renderObj(obj, '', true);
         this._console.append(el);
         this._console.scrollTop(this._console[0].scrollHeight);
     }
@@ -63,14 +63,31 @@ class MyConsole {
         }
         return line;
     }
-    _renderObj(obj, addClass) {
+    _createStartLine(openingSign, addClass){
+        addClass = addClass || '';
+        openingSign = openingSign || '{';
+        return $('<div>').addClass('console__block-open').text( openingSign );
+    }
+    _createEndLine(closingSign, addClass){
+        addClass = addClass || '';
+        closingSign = closingSign || '}';
+        return $('<div>').addClass('console__block-close').text( closingSign );
+    }
+    _renderObj(obj, addClass,isSubBlock) {
         const block = $('<div>');
         block.addClass('console__block');
+        if (!isSubBlock){
+            block.addClass('block__is-sub');
+        }
         if (addClass) {
             block.addClass(addClass);
         }
         if (obj instanceof Array){
             block.addClass('array');
+            block.append(this._createStartLine('['));
+        }else if (typeof (obj) === 'object') {
+            block.addClass('object');
+            block.append(this._createStartLine());
         }
         if (typeof (obj) === 'object') {
             let itemCount = Object.keys(obj).length;
@@ -81,14 +98,24 @@ class MyConsole {
                 if (obj[key] instanceof Array) {
                     value = this._renderObj(obj[key]);
                 } else {
+                    if (typeof(obj[key]) === 'function'){
+                        keyBlock.addClass('funct__key');
+                    }
                     value = this._createValue(obj[key]);
                 }
                 block.append(this._createLine(keyBlock, value, itemCount ? 'comma' : ''));
             });
         } else {
-            block.addClass('text')
+            block.addClass('string')
             block.append(this._createLine(this._createValue(obj)));
         }
+        if (obj instanceof Array){
+            block.addClass('array');
+            block.append(this._createEndLine(']'));
+        }else if (typeof (obj) === 'object'){
+            block.append(this._createEndLine());
+        }
+
         return block;
     }
 }
