@@ -41,4 +41,6 @@ cons.log({
     k5:[22,23,24],
     key5:function(){}
 });
+```
 ### Рузультат
+<img src="img/console.jpg" width="70%"/>
