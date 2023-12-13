@@ -24,12 +24,27 @@ class MyConsole {
         key.text(keyName);
         return key;
     }
-    _createValue(valueContent, addClass) {
+    _createValue(valueData, addClass) {
         const value = $('<div>');
+        const valueType = typeof(valueData);
+        let valueContent='';
         value.addClass("console__value");
+        value.addClass(valueType);
         if (addClass) {
             value.addClass(addClass);
         }
+        if (valueData instanceof Array){
+            value.addClass('array');
+            value.removeClass(valueType);
+            return this._renderObj(valueData);
+        }else if (valueType === 'function'){
+            valueContent = `<function> ${valueData.name?valueData.name:'anonymous'}`;
+        }else if (valueType === 'object'){
+            return this._renderObj(valueData);
+        }else{
+            valueContent = `${valueData}`;
+        }
+
         value.append($("<pre>").text(valueContent));
         return value;
 
@@ -54,6 +69,9 @@ class MyConsole {
         if (addClass) {
             block.addClass(addClass);
         }
+        if (obj instanceof Array){
+            block.addClass('array');
+        }
         if (typeof (obj) === 'object') {
             let itemCount = Object.keys(obj).length;
             Object.keys(obj).forEach(key => {
@@ -61,29 +79,9 @@ class MyConsole {
                 let value;
                 itemCount--;
                 if (obj[key] instanceof Array) {
-                    value = this._renderObj(obj[key], 'array');
+                    value = this._renderObj(obj[key]);
                 } else {
-                    switch (typeof (obj[key])) {
-                        case "string":
-                            value = this._createValue(`"${obj[key]}"`, 'string');
-                            break;
-                        case "number":
-                            value = this._createValue(`${obj[key]}`, 'number');
-                            break;
-                        case "boolean":
-                            value = this._createValue(`${obj[key]}`, 'bool');
-                            break;
-                        case "function":
-                            keyBlock.addClass("funct__key")
-                            value = this._createValue(`<function> ${obj[key].name}`, 'funct');
-                            break;
-                        case "object":
-                            value = this._renderObj(obj[key]);
-                            break;
-                        default:
-                            value = this._createValue(`<${typeof (obj[key])}>${obj[key]}`);
-                            break;
-                    }
+                    value = this._createValue(obj[key]);
                 }
                 block.append(this._createLine(keyBlock, value, itemCount ? 'comma' : ''));
             });

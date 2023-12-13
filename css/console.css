@@ -116,14 +116,17 @@
 .number{
     color: #4040AA
 }
-.bool{
+.boolean{
     color: #00b823;
 }
 .string{
     color: #b25b07;
 }
-.funct{
+.function{
     color:#5858ff;
+}
+.object{
+    
 }
 .funct__key{
     color:#fd9800;
