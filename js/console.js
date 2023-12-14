@@ -73,6 +73,54 @@ class MyConsole {
         closingSign = closingSign || '}';
         return $('<div>').addClass('console__block-close').text( closingSign );
     }
+    _renderStartLine( block, obj ){
+        if (obj instanceof Array){
+            block.addClass('array');
+            block.append(this._createStartLine('['));
+        }else if (typeof (obj) === 'object') {
+            block.addClass('object');
+            block.append(this._createStartLine());
+        }
+    }
+    _renderEndLine( block, obj ){
+        if (obj instanceof Array){
+            block.addClass('array');
+            block.append(this._createEndLine(']'));
+        }else if (typeof (obj) === 'object'){
+            block.append(this._createEndLine());
+        }
+    }
+    _defineValueTypeAndRenderThis(value, keyBlock){
+        if (value instanceof Array) {
+            return this._renderObj(value);
+        } else {
+            if (typeof(value) === 'function'){
+                keyBlock.addClass('funct__key');
+            }
+            return this._createValue(value);
+        }
+    }
+    _renderObjContent(block, obj){
+        let itemCount = Object.keys(obj).length;
+        Object.keys(obj).forEach(key => {
+            const keyBlock = this._createKey(key);
+            block.append(
+                this._createLine(
+                    keyBlock,
+                    this._defineValueTypeAndRenderThis(obj[key], keyBlock),
+                    --itemCount ? 'comma' : ''
+                )
+            );
+        });
+    }
+    _defineObjectTypeAndRenderThis( block, obj ){
+        if (typeof (obj) === 'object') {
+            this._renderObjContent( block, obj );
+        } else {
+            block.addClass('string')
+            block.append(this._createLine(this._createValue(obj)));
+        }        
+    }
     _renderObj(obj, addClass,isSubBlock) {
         const block = $('<div>');
         block.addClass('console__block');
@@ -82,40 +130,9 @@ class MyConsole {
         if (addClass) {
             block.addClass(addClass);
         }
-        if (obj instanceof Array){
-            block.addClass('array');
-            block.append(this._createStartLine('['));
-        }else if (typeof (obj) === 'object') {
-            block.addClass('object');
-            block.append(this._createStartLine());
-        }
-        if (typeof (obj) === 'object') {
-            let itemCount = Object.keys(obj).length;
-            Object.keys(obj).forEach(key => {
-                const keyBlock = this._createKey(key);
-                let value;
-                itemCount--;
-                if (obj[key] instanceof Array) {
-                    value = this._renderObj(obj[key]);
-                } else {
-                    if (typeof(obj[key]) === 'function'){
-                        keyBlock.addClass('funct__key');
-                    }
-                    value = this._createValue(obj[key]);
-                }
-                block.append(this._createLine(keyBlock, value, itemCount ? 'comma' : ''));
-            });
-        } else {
-            block.addClass('string')
-            block.append(this._createLine(this._createValue(obj)));
-        }
-        if (obj instanceof Array){
-            block.addClass('array');
-            block.append(this._createEndLine(']'));
-        }else if (typeof (obj) === 'object'){
-            block.append(this._createEndLine());
-        }
-
+        this._renderStartLine( block, obj );
+        this._defineObjectTypeAndRenderThis( block, obj );
+        this._renderEndLine( block, obj );
         return block;
     }
 }
